@@ -35,7 +35,6 @@ noteInput.addEventListener("keydown", (event) => {
     const text = noteInput.value;
     // document.getElementById("noteInput").placeholder = "Añade una nota...";
     createStickyNote(text);
-    // noteInput.value = "";
   }
 });
 
@@ -46,7 +45,9 @@ listNotes.addEventListener("click", (event) => {
 /* ******** */
 
 const createStickyNote = (text) => {
-  if (text.trim() === "") {
+  console.log("data char", text.charAt(0));
+  if (text.trim() === "" || text.charAt(0) === " ") {
+    noteInput.value = "";
     return;
   }
   const index = parseInt(Math.random() * (6 - 0) + 0);
@@ -56,7 +57,9 @@ const createStickyNote = (text) => {
     color,
     text,
   };
-  noteInput.value = "";
+
+  console.log("hh", noteInput.value.replace("\n", ""));
+  noteInput.value = noteInput.value.split("\n").join("");
   notes[newNote.id] = newNote;
   printNotes();
 };
@@ -64,7 +67,7 @@ const createStickyNote = (text) => {
 const printNotes = () => {
   localStorage.setItem("notes", JSON.stringify(notes));
   /* deja vacio el contenido de la lista de notas  */
-  //
+  listNotes.innerHTML = "";
   /* ******** */
 
   Object.values(notes).forEach((note) => {
@@ -78,12 +81,13 @@ const printNotes = () => {
     clone.querySelector(".note").style.backgroundColor = note.color;
     /* ******** */
 
+    clone.querySelector(".note").setAttribute("id", note.id);
     /* opten el primer nodo del fragment como nodo de referencia */
     const referenceNode = fragment.firstChild;
     /* ******** */
 
     /* inserta clone como primer elemento en el fragment utilizando el nodo de referencia obtenido  */
-    fragment.appendChild(clone);
+    fragment.insertBefore(clone, referenceNode);
     /* ******** */
   });
   /* inserta el fragment en la lista de notas */
@@ -94,16 +98,14 @@ const printNotes = () => {
 const clickNote = (e) => {
   if (e.target.ariaLabel === "delete") {
     const note = e.srcElement.parentElement;
-    // console.log("notess", note.querySelector(".detail").textContent);
     /* opten el atributo id de note */
-    // const id = note.;
+    const id = note.getAttribute("id");
     /* ******** */
 
     /* elimina el elemento note */
-    //
+    note.remove();
     /* ******** */
-    // console.log("paisanas", note.querySelector(".fas").dataset.id);
-    delete notes[1657770380430];
+    delete notes[id];
     localStorage.setItem("notes", JSON.stringify(notes));
   }
   e.stopPropagation();
