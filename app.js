@@ -12,6 +12,8 @@ const random_colors = [
   "#ebb328",
 ];
 let notes = {};
+let idDocument = "";
+let clickText = "";
 const noteInput = document.getElementById("noteInput");
 const template = document.getElementById("template").content;
 const listNotes = document.getElementById("list-notes");
@@ -46,11 +48,27 @@ listNotes.addEventListener("click", (event) => {
 /* ******** */
 
 const createStickyNote = (text) => {
-  console.log("data char", text.charAt(0));
+  console.log("data char", text);
   if (text.trim() === "" || text.charAt(0) === " ") {
     noteInput.value = "";
     return;
+  } else if (clickText !== "") {
+    // console.log("paisana", event);
+    // const note = event.srcElement.parentElement;
+    const id = idDocument;
+    notes[id] = {
+      id: notes[id].id,
+      color: notes[id].color,
+      text: noteInput.value,
+    };
+    console.log("paisana final", notes);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    printNotes();
+    noteInput.value = "";
+    clickText = "";
+    return;
   }
+
   const index = parseInt(Math.random() * (6 - 0) + 0);
   const color = random_colors[index];
   const newNote = {
@@ -114,17 +132,12 @@ const clickNote = (e) => {
   } else if (e.target.ariaLabel === "edit") {
     const note = e.srcElement.parentElement;
     const id = note.getAttribute("id");
-    const index = parseInt(Math.random() * (6 - 0) + 0);
-    const color = random_colors[index];
+    documentId(id, notes[id].text);
     noteInput.value = notes[id].text;
-    notes[id] = {
-      id: notes[id].id,
-      color: notes[id].color,
-      text: noteInput.value,
-    };
-    console.log("edit escojiste", notes[id]);
-    localStorage.setItem("notes", JSON.stringify(notes));
-    return;
   }
   e.stopPropagation();
+};
+const documentId = (id, textclick) => {
+  idDocument = id;
+  clickText = textclick;
 };
