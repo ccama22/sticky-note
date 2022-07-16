@@ -54,6 +54,10 @@ body {
     top: 5px;
     cursor: pointer;
 }
+.edit {
+    margin-right: 40px;
+    background-color: #c2ff3d;
+}
 .note textarea {
     background-color: transparent;
     border: none;

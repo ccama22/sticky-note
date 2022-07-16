@@ -40,6 +40,7 @@ noteInput.addEventListener("keydown", (event) => {
 
 /* agrega el evento click a la lista de notas y conecta con la funcion clickNote */
 listNotes.addEventListener("click", (event) => {
+  console.log("event ve", event);
   clickNote(event);
 });
 /* ******** */
@@ -58,8 +59,9 @@ const createStickyNote = (text) => {
     text,
   };
 
-  console.log("hh", noteInput.value.replace("\n", ""));
-  noteInput.value = noteInput.value.split("\n").join("");
+  // console.log("hh", noteInput.value.replace("\n", ""));
+  // noteInput.value = noteInput.value.split("\n").join("");
+  noteInput.value = "";
   notes[newNote.id] = newNote;
   printNotes();
 };
@@ -96,6 +98,7 @@ const printNotes = () => {
 };
 
 const clickNote = (e) => {
+  console.log("label esc", e.target.ariaLabel);
   if (e.target.ariaLabel === "delete") {
     const note = e.srcElement.parentElement;
     /* opten el atributo id de note */
@@ -105,8 +108,23 @@ const clickNote = (e) => {
     /* elimina el elemento note */
     note.remove();
     /* ******** */
+    console.log("info cca", notes[id]);
     delete notes[id];
     localStorage.setItem("notes", JSON.stringify(notes));
+  } else if (e.target.ariaLabel === "edit") {
+    const note = e.srcElement.parentElement;
+    const id = note.getAttribute("id");
+    const index = parseInt(Math.random() * (6 - 0) + 0);
+    const color = random_colors[index];
+    noteInput.value = notes[id].text;
+    notes[id] = {
+      id: notes[id].id,
+      color: notes[id].color,
+      text: noteInput.value,
+    };
+    console.log("edit escojiste", notes[id]);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    return;
   }
   e.stopPropagation();
 };
